@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
+import sys
+import threading
 import urllib
 import urllib.request
 from urllib.parse import urlparse
@@ -8,9 +10,20 @@ from urllib.parse import urljoin
 from os import makedirs
 import os.path, time, re
 
+# 変更前の再帰関数の実行回数の上限を表示
+print("変更前の再帰関数の実行回数の上限")
+print(sys.getrecursionlimit())
+
+sys.setrecursionlimit(67108864) #64MB
+threading.stack_size(1024*1024)  #2の20乗のstackを確保=メモリの確保
+
+# 変更後の再帰関数の実行回数の上限を表示
+print("変更後の再帰関数の実行回数の上限")
+print(sys.getrecursionlimit())
+
 # ターゲットのドメインを指定
-target_domain = 'https://www.khb-tv.co.jp/'
-domain = 'www.khb-tv.co.jp'
+target_domain = 'https://www.ncctv.co.jp/'
+domain = 'www.ncctv.co.jp'
 # target_domain = 'http://hmc.me.es.osaka-u.ac.jp/'
 # domain = 'hmc.me.es.osaka-u.ac.jp'
 

@@ -15,10 +15,10 @@ def get_title(url):
 	# 	print('get-----non-responsed-url')
 	# 	return 'non-responsed'
 
-# f='https://www.khb-tv.co.jp/'
+# f='https://www.ncctv.co.jp/'
 # print(get_title(f))
 
-csv_file = open("./all_www.khb-tv.co.jp.csv", "r", encoding="ms932", errors="", newline="" )
+csv_file = open("./all_www.ncctv.co.jp.csv", "r", encoding="ms932", errors="", newline="" )
 #リスト形式
 f = csv.reader(csv_file, delimiter=",", doublequote=True, lineterminator="\r\n", quotechar='"', skipinitialspace=True)
 

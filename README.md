@@ -5,3 +5,13 @@
 さらに、レスポンスエラーがおきるurl
 タイトルがないurlとそこに遷移しようとする遷移元url
 は別ファイルで作成するようにしている
+
+## コマンドの実行方法
+```
+$ python hierachical_site.py
+
+# 記載してあるライブラリを入れる必要がある
+$ pip install bs4
+or
+$ python -m pip install bs4
+```
