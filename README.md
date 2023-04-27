@@ -8,6 +8,8 @@
 
 ## コマンドの実行方法
 ```
+# variables_example.pyに設定する情報をいれvariables.pyを作成しておく
+
 $ python hierachical_site.py
 
 # 記載してあるライブラリを入れる必要がある

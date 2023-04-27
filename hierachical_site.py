@@ -2,13 +2,12 @@ from bs4 import BeautifulSoup
 import requests
 import sys
 import threading
-import urllib
 import urllib.request
 from urllib.parse import urlparse
 from urllib.parse import urljoin
-# from urllib.request import urlretrievepyts
 from os import makedirs
-import os.path, time, re
+import os.path, re
+import variables
 
 # 変更前の再帰関数の実行回数の上限を表示
 print("変更前の再帰関数の実行回数の上限")
@@ -22,17 +21,14 @@ print("変更後の再帰関数の実行回数の上限")
 print(sys.getrecursionlimit())
 
 # ターゲットのドメインを指定
-target_domain = 'https://www.ncctv.co.jp/'
-domain = 'www.ncctv.co.jp'
-# target_domain = 'http://hmc.me.es.osaka-u.ac.jp/'
-# domain = 'hmc.me.es.osaka-u.ac.jp'
+target_domain = variables.target_domain
+domain = variables.domain
+
+# 無視する拡張子
+ignore_lis = variables.ignore_lis
 
 # 記事の余分なデータを含まないようにするため/の最大数を定義
 max_slash = 1000
-
-# 無視する拡張子
-ignore_lis = ['.jpg','.png','.pdf']
-
 
 # 同じページにアクセスしないようにするグローバル変数
 sugi_files = {}
@@ -45,18 +41,13 @@ def check(url):
     try:
         response = requests.get(url)
         response.raise_for_status()
-    # print(response.status_code)
     except requests.exceptions.RequestException:
         return False
     return True
 
-
-
-
 # urlからタイトルを抽出する関数
 def get_title(url):
 	try:
-		# if not check(url): return('non-title')
 		html = requests.get(url)
 		soup = BeautifulSoup(html.content, "html.parser")
 		if soup.find('title') is None:
@@ -72,7 +63,6 @@ def get_title(url):
 # aタグを抽出する関数
 def enum_links(html, base):
 	soup = BeautifulSoup(html, "html.parser")
-	# links = soup.select("link[rel='stylesheet']")
 	links = soup.select("a[href]")
 	result = []
 
@@ -81,17 +71,10 @@ def enum_links(html, base):
 		base2=base
 		
 		# hrefの最後の文字が/の時削除
-		# if len(href)>0 and href[-1]=='/':
-		# 	href=href[:-1]
-		# if base2[-1]=='/':
-		# 	base2=base2[:-1]
-
-		# # ../といったやつがある場合の処理
-		# ll=href.count('..')+1
-		# base_lis = base2.split('/')
-		# for i in range(ll):
-		# 	base_lis[-1-i]=''
-		# base2='/'.join(base_lis)
+		if len(href)>0 and href[-1]=='/':
+			href=href[:-1]
+		if base2[-1]=='/':
+			base2=base2[:-1]
 
 		ignore_flag = False
 		# 特定の拡張子がある場合は無視
@@ -101,21 +84,6 @@ def enum_links(html, base):
 				break
 		if ignore_flag:
 			continue
-
-
-		# **************.htmlなどといった14桁の数字のhtmlは無視
-		# href_lis = href.split('/')
-		# if re.compile('[0-9]{14}').match(href_lis[-1]):
-		# 	continue
-		# # 8桁の数字のhtmlは無視
-		# if re.compile('[0-9]{8}').match(href_lis[-1]): continue
-		# if re.compile('[0-9]{5}').search(href_lis[-1]): continue
-		# if len(href_lis)>=3:
-		# 	if re.compile('[0-9]{4}').match(href_lis[-2]): continue
-		# 	if re.compile('[0-9]{4}').match(href_lis[-3]): continue
-		# # index.html以外でhtmlがつく奴は無視
-		# # elif '.html' in href_lis[-1]: continue
-		# href='/'.join(href_lis)
 
 		# 結合
 		if 'http' in href:
@@ -130,9 +98,6 @@ def enum_links(html, base):
 		if saveurl in sugi_html : continue
 		# ドメイン名が違うやつは無効
 		if not domain in saveurl : continue
-		# 長いURLは無効https://aaa/a/33/4/5/6みたいなやつ
-		# l = len(saveurl.split('/'))
-		# if l > max_slash+3: continue
 		result.append(saveurl)
 	return result
 
@@ -155,8 +120,6 @@ def download_file(url):
 	try:
 		print("download=", url)
 		all_url.append(url)
-		# urlretrieve(url, savepath)
-		# time.sleep(1)
 
 		return savepath
 	except:
